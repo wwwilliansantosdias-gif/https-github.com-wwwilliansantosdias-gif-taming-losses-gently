@@ -21,7 +21,9 @@ def _reduce(loss: Tensor, reduction: str) -> Tensor:
     raise ValueError(f"Unknown reduction: {reduction!r}")
 
 
-def charbonnier_loss(pred: Tensor, target: Tensor, eps: float = 1e-3, reduction: str = "mean") -> Tensor:
+def charbonnier_loss(
+    pred: Tensor, target: Tensor, eps: float = 1e-3, reduction: str = "mean"
+) -> Tensor:
     """Smooth, differentiable approximation of the L1 loss.
 
     Behaves like L2 near zero and like L1 for large residuals, avoiding the
@@ -66,7 +68,6 @@ def label_smoothing_cross_entropy(
     `(N,)`. Softens hard one-hot targets to discourage over-confident
     predictions and improve calibration.
     """
-    num_classes = logits.size(-1)
     log_probs = F.log_softmax(logits, dim=-1)
     nll = -log_probs.gather(dim=-1, index=targets.unsqueeze(-1)).squeeze(-1)
     smooth = -log_probs.mean(dim=-1)
